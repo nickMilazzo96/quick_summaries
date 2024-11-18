@@ -11,3 +11,6 @@ wheels/
 
 # Secret files
 secret.py
+
+# Particular csv
+faqs.csv
