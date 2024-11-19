@@ -1,9 +1,30 @@
 import pandas as pd
 import openai
+import ollama
 import secret
 
+csv_to_process = "test_faqs.csv"# Main csv is "faqs.csv"
+
 # Import csv
-df = pd.read_csv("faqs.csv")
+df = pd.read_csv(csv_to_process)
+
+def generate_ollama_summary(page, question, summary):
+    # Prepare prompt
+    prompt = f'''I am going to give you a topic, question, and an answer. 
+    Please create a 1-2 sentence response to the question using the answer I provided as source material,
+    keeping the topic I gave you in mind.
+    Topic: {page}
+    Question: "{question}"
+    Answer: "{summary}".
+    '''
+    # Generate response with ollama
+    response = ollama.chat(model='llama3.2', messages=[
+    {
+        'role': 'user',
+        'content': prompt,
+    },
+    ])
+    return response
 
 def generate_quick_summary(page, question, summary):
     # Generate prompt
@@ -32,6 +53,6 @@ def add_quick_summary():
         # Add GPT quick summary to appropriate cell in "quick_summary" column
         row["quick_summary"] = quick_summary
 
-add_quick_summary()
+generate_ollama_summary()
 
-df.to_csv("faqs_with_summaries.csv", index = False)
+df.to_csv(f"{csv_to_process}_with_summaries.csv", index = False)
