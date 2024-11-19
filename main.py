@@ -12,7 +12,7 @@ def generate_ollama_summary(page, question, summary):
     # Prepare prompt
     prompt = f'''I am going to give you a topic, question, and an answer. 
     Please create a 1-2 sentence response to the question using the answer I provided as source material,
-    keeping the topic I gave you in mind.
+    keeping the topic I gave you in mind. Give your answer as a single string - no new lines, etc.
     Topic: {page}
     Question: "{question}"
     Answer: "{summary}".
@@ -24,7 +24,7 @@ def generate_ollama_summary(page, question, summary):
         'content': prompt,
     },
     ])
-    return response
+    return response['message']['content']
 
 def generate_quick_summary(page, question, summary):
     # Generate prompt
@@ -46,13 +46,12 @@ def generate_quick_summary(page, question, summary):
     return response
 
 def add_quick_summary():
-    # Create a prompt for each row
-    for index, row in df.iterrows():
-        quick_summary = generate_quick_summary(row["page"], row["question"], row["summary"])
+    def generate_summary(row):
+        return generate_ollama_summary(row["page"], row["question"], row["summary"])
+    
+    df["quick_summary"] = df.apply(generate_summary, axis=1)
+    print(f"Total number of rows processed: {len(df)}")
 
-        # Add GPT quick summary to appropriate cell in "quick_summary" column
-        row["quick_summary"] = quick_summary
-
-generate_ollama_summary()
+add_quick_summary()
 
 df.to_csv(f"{csv_to_process}_with_summaries.csv", index = False)
