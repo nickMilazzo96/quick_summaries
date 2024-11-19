@@ -14,3 +14,4 @@ secret.py
 
 # Particular csv
 faqs.csv
+faqs_with_summaries.csv
