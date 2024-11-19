@@ -33,3 +33,20 @@ def add_quick_summary(prompt):
 
         # Add GPT quick summary to appropriate cell in "quick_summary" column
         row["quick_summary"] = response
+
+
+def generate_quick_summary(prompt):
+    # Send a prompt to GPT
+    openai.api_key = secret.api_key
+    response = openai.chat.completions.create(
+        model=secret.model,
+        messages=[
+            {
+                "role": "system",
+                "content": "I will give you a question, and answer, and a topic to which the question and answer pertain. Your job is to generate a 1-2 sentence summary of the provided answer using only information present in the answer.",
+            },
+            {"role": "user", "content": prompt},
+        ],
+        temperature=0.1,
+    )
+    return response
