@@ -24,10 +24,14 @@ def generate_quick_summary(page, question, summary):
     )
     return response
 
-def add_quick_summary(response):
+def add_quick_summary():
     # Create a prompt for each row
-    for row in df:
+    for index, row in df.iterrows():
         quick_summary = generate_quick_summary(row["page"], row["question"], row["summary"])
 
         # Add GPT quick summary to appropriate cell in "quick_summary" column
         row["quick_summary"] = quick_summary
+
+add_quick_summary()
+
+df.to_csv("faqs_with_summaries.csv", index = False)
