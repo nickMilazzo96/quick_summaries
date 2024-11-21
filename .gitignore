@@ -12,7 +12,6 @@ wheels/
 # Secret files
 secret.py
 
-# Particular csv
-faqs.csv
+# Particular csvs
 faqs_with_summaries.csv
 test_faqs.csv
