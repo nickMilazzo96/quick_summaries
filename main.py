@@ -4,7 +4,7 @@ import ollama
 import secret
 
 # csvs are all in .gitignore
-csv_to_process = "test_faqs.csv"  # Main csv is "faqs.csv"
+csv_to_process = "faqs.csv"  # Main csv is "faqs.csv"
 
 # Import csv
 df = pd.read_csv(csv_to_process)
