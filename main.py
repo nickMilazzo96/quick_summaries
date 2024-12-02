@@ -3,10 +3,11 @@ import openai
 import ollama
 import secret
 import os
+import tiktoken
 
 # csvs are all in .gitignore
-csv_to_process = "csvs/faqs.csv"  # Main csv is "faqs.csv"
-output_csv = f"csvs/{csv_to_process}_with_summaries.csv"
+csv_to_process = "csvs/test_faqs.csv"  # Main csv is "faqs.csv"
+output_csv = f"{csv_to_process}_with_summaries.csv"
 
 # Import csv
 df = pd.read_csv(csv_to_process)
@@ -32,10 +33,20 @@ def generate_ollama_summary(page, question, summary):
     )
     return response["message"]["content"]
 
+def token_count(text):
+    # Load the tokenizer
+    tokenizer = tiktoken.get_encoding("cl100k_base")  # Compatible with GPT-4 and GPT-3.5
+    tokens = tokenizer.encode(text)
+    
+    print(f"Original token count: {len(tokens)}")
+    return text
 
 def generate_quick_summary(page, question, summary):
     # Generate prompt
     prompt = f"This page is about {page}. The question is '{question}' and the answer is {summary}. Please give a quick summary of the answer that is no more than 2 sentences long."
+
+    # Check token count of prompt
+    token_count(prompt)
 
     # Send a prompt to GPT
     openai.api_key = secret.api_key
