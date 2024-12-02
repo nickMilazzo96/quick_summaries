@@ -2,13 +2,14 @@ import pandas as pd
 import openai
 import ollama
 import secret
+import os
 
 # csvs are all in .gitignore
 csv_to_process = "csvs/faqs.csv"  # Main csv is "faqs.csv"
+output_csv = f"csvs/{csv_to_process}_with_summaries.csv"
 
 # Import csv
 df = pd.read_csv(csv_to_process)
-
 
 def generate_ollama_summary(page, question, summary):
     # Prepare prompt
@@ -53,13 +54,21 @@ def generate_quick_summary(page, question, summary):
 
 
 def add_quick_summary():
-    def generate_summary(row):
-        return generate_ollama_summary(row["page"], row["question"], row["summary"])
+    # Check if the output file exists
+    file_exists = os.path.isfile(output_csv)
 
-    df["quick_summary"] = df.apply(generate_summary, axis=1)
-    print(f"Total number of rows processed: {len(df)}")
+    # Open the output file in append mode
+    with open(output_csv, 'a') as f:
+        # Write the header if the file does not exist
+        if not file_exists:
+            df.head(0).to_csv(f, index=False)
+        
+        # Process each row and append the result to the output file
+        for index, row in df.iterrows():
+            quick_summary = generate_quick_summary(row["page"], row["question"], row["summary"])
+            row["quick_summary"] = quick_summary
+            row.to_frame().T.to_csv(f, header=False, index=False)
+            print(f"Processed row {index + 1}/{len(df)}")
 
 
 add_quick_summary()
-
-df.to_csv(f"csvs/{csv_to_process}_with_summaries.csv", index=False)
