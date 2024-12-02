@@ -4,7 +4,7 @@ import ollama
 import secret
 
 # csvs are all in .gitignore
-csv_to_process = "faqs.csv"  # Main csv is "faqs.csv"
+csv_to_process = "csvs/faqs.csv"  # Main csv is "faqs.csv"
 
 # Import csv
 df = pd.read_csv(csv_to_process)
@@ -62,4 +62,4 @@ def add_quick_summary():
 
 add_quick_summary()
 
-df.to_csv(f"{csv_to_process}_with_summaries.csv", index=False)
+df.to_csv(f"csvs/{csv_to_process}_with_summaries.csv", index=False)
