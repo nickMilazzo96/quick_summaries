@@ -6,8 +6,8 @@ import os
 import tiktoken
 
 # csvs are all in .gitignore
-csv_to_process = "csvs/test_faqs.csv"  # Main csv is "faqs.csv"
-output_csv = f"{csv_to_process}_with_summaries.csv"
+csv_to_process = "csvs/faqs.csv"  # Main csv is "faqs.csv"
+output_csv = "csvs/faqs_with_summaries.csv"
 
 # Import csv
 df = pd.read_csv(csv_to_process)
@@ -61,7 +61,7 @@ def generate_quick_summary(page, question, summary):
         ],
         temperature=0.1,
     )
-    return response
+    return response.choices[0].message.content
 
 
 def add_quick_summary():
